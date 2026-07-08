@@ -78,8 +78,64 @@ def pay_per_reroll_die_game(sides, reroll_cost):
     # TODO: return {'threshold': t, 'value': V} for the pay-per-reroll die game under the optimal threshold policy.
     pass
 
-# Step 4 - red_black_card_game_value (not yet solved)
-# TODO: implement
+# Step 4 - red_black_card_game_value
+import numpy as np
+def red_black_card_game_value(num_red, num_black):
+    """
+    Calculates the expected payout of the red-black card game under optimal play
+    using dynamic programming.
+    
+    Returns a dict: {'value': float, 'stop_now': bool}
+    """
+    # Create a 2D grid to store the optimal value at each (r, b) state
+    dp = np.zeros((num_red + 1, num_black + 1))
+    
+    # Fill the DP table iteratively
+    for r in range(num_red + 1):
+        for b in range(num_black + 1):
+            if r == 0 and b == 0:
+                continue
+                
+            total_cards = r + b
+            ev_draw = 0.0
+            
+            # If we draw a red card
+            if r > 0:
+                ev_draw += (r / total_cards) * (1.0 + dp[r - 1, b])
+                
+            # If we draw a black card
+            if b > 0:
+                ev_draw += (b / total_cards) * (-1.0 + dp[r, b - 1])
+                
+            # Optimal choice: choose between drawing or stopping (0)
+            dp[r, b] = max(0.0, ev_draw)
+            
+    # Determine the initial step action from the full deck state
+    # We re-calculate the draw value at the start to check for ties/stopping
+    initial_total = num_red + num_black
+    if initial_total == 0:
+        return {'value': 0.0, 'stop_now': True}
+        
+    initial_ev_draw = 0.0
+    if num_red > 0:
+        initial_ev_draw += (num_red / initial_total) * (1.0 + dp[num_red - 1, num_black])
+    if num_black > 0:
+        initial_ev_draw += (num_black / initial_total) * (-1.0 + dp[num_red, num_black - 1])
+        
+    # As per the rules: ties (continuation value <= 0) resolve as stopping
+    stop_now = initial_ev_draw <= 0.0
+    final_value = dp[num_red, num_black]
+    
+    return {
+        'value': float(final_value),
+        'stop_now': bool(stop_now)
+    }
+           
+
+    
+
+    # TODO: return {'value': expected payout under optimal stopping, 'stop_now': whether to stop immediately}.
+    pass
 
 # Step 5 - make_quotes (not yet solved)
 # TODO: implement
