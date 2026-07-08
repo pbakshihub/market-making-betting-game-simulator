@@ -165,8 +165,12 @@ def execute_trade(state, side, bid, ask, size=1):
     # TODO: apply a counterparty trade against your bid/ask and return updated state
     pass
 
-# Step 7 - mark_to_market_pnl (not yet solved)
-# TODO: implement
+# Step 7 - mark_to_market_pnl
+def mark_to_market_pnl(cash, inventory, settlement_value):
+    pnl = cash + (inventory * settlement_value)
+    return float(pnl)
+    # TODO: return total P&L given cash, remaining inventory, and settlement value.
+    pass
 
 # Step 8 - adverse_selection_loss (not yet solved)
 # TODO: implement
