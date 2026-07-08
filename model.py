@@ -49,8 +49,34 @@ def one_reroll_die_value(sides):
     # TODO: return {'value': expected winnings under optimal reroll policy, 'reroll_faces': sorted faces to reroll}
     pass
 
-# Step 3 - pay_per_reroll_die_game (not yet solved)
-# TODO: implement
+# Step 3 - pay_per_reroll_die_game
+import numpy as np
+def pay_per_reroll_die_game(sides, reroll_cost):
+    
+    best_value = -float('inf')
+    best_threshold = None
+    
+    # calculate optimal value for every k and select the largest
+
+    for k in range(1,sides+1):
+        keep_sum = sum(range(k,sides+1))
+        reroll_faces = k-1
+
+        numerator = keep_sum - (reroll_faces*reroll_cost)
+        denominator = sides - reroll_faces
+        curr_value = numerator/denominator
+        
+        if curr_value > best_value:
+            best_value = curr_value
+            best_threshold = k 
+    return {
+        'threshold': int(best_threshold),
+        'value': float(best_value)
+    }        
+
+
+    # TODO: return {'threshold': t, 'value': V} for the pay-per-reroll die game under the optimal threshold policy.
+    pass
 
 # Step 4 - red_black_card_game_value (not yet solved)
 # TODO: implement
