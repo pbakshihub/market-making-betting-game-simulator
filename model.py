@@ -249,8 +249,43 @@ def update_fair_value_from_trade(fair_value, side, bid, ask, adjustment):
     
     pass
 
-# Step 12 - update_remaining_card_value (not yet solved)
-# TODO: implement
+# Step 12 - update_remaining_card_value
+def update_remaining_card_value(remaining_counts, revealed_value):
+    # TODO: decrement the revealed card, prune zero counts, and return updated deck + mean value.
+
+    # Create a shallow copy to avoid mutating the original dictionary passed in
+    updated_counts = remaining_counts.copy()
+    
+    # Decrement the count of the revealed card
+    if revealed_value in updated_counts:
+        updated_counts[revealed_value] -= 1
+        # Remove the key entirely if its count hits zero
+        if updated_counts[revealed_value] <= 0:
+            del updated_counts[revealed_value]
+            
+    # Calculate the total number of remaining cards
+    total_cards = sum(updated_counts.values())
+    
+    # Handle the boundary case: empty deck
+    if total_cards == 0:
+        return {
+            'remaining_counts': updated_counts,
+            'expected_value': 0.0
+        }
+        
+    # Extract unique remaining values and calculate their exact probabilities
+    values = list(updated_counts.keys())
+    probabilities = [updated_counts[val] / total_cards for val in values]
+    
+    # Reuse expected_value from Step 1 to calculate the new mean
+    new_ev = expected_value(values, probabilities)
+    
+    return {
+        'remaining_counts': updated_counts,
+        'expected_value': float(new_ev)
+    }
+
+    pass
 
 # Step 13 - run_market_making_episode (not yet solved)
 # TODO: implement
